@@ -27,7 +27,13 @@
         <div class="col-md-6">
           <div class="form-group">
             <label>Upload Image:</label> <br />
-            <input type="file" ref="file" @change="processFile" required />
+            <input
+              type="file"
+              ref="file"
+              class="form-control-file"
+              @change="processFile"
+              required
+            />
           </div>
         </div>
       </div>
@@ -37,12 +43,6 @@
         <button class="btn btn-primary">Create</button>
       </div>
     </form>
-
-    <div class="message" v-if="this.added">
-      <h5>{{ this.title }}</h5>
-      <h5>{{ this.body }}</h5>
-      <img v-bind:src="this.img.name" />
-    </div>
   </div>
 </template>
 
@@ -59,18 +59,17 @@ export default {
     return {
       title: null,
       body: null,
-      img: null,
-      added: false,
+      img: null
     };
   },
   methods: {
-    async addPost() {
+    addPost() {
       let uri = 'http://localhost:4000/posts/add';
 
       let post = {
         title: this.title,
         body: this.body,
-        img: this.img,
+        img: this.img
       };
 
       const formData = new FormData();
@@ -78,19 +77,27 @@ export default {
       for (let prop in post) {
         formData.append(prop, post[prop]);
       }
-      console.log('THIS IS THE POST PAYLAOD', post);
+      console.log('THIS IS THE POST PAYLOAD', post);
       try {
-        await axios.post(uri, formData);
-        this.message = 'Got through!';
+        axios.post(uri, formData).then(() => {
+          window.location = '/posts';
+        });
       } catch (error) {
         console.log(error);
         this.message = 'Something went wrong!';
       }
     },
-    processFile() {
+    async processFile() {
       this.img = this.$refs.file.files[0];
       this.added = true;
-    },
-  },
+
+      let uri = 'http://localhost:4000/posts/upload/image';
+      const formData = new FormData();
+      formData.append('image', this.$refs.file.files[0]);
+      await axios.post(uri, formData, (err, res) => {
+        res.json({ response: res.data });
+      });
+    }
+  }
 };
 </script>

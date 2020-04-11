@@ -6,19 +6,29 @@ let Post = new Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: true
     },
     body: {
       type: String,
-      required: true,
+      required: true
     },
-    img: {
-      type: Buffer,
-      required: true,
+    pathToImg: {
+      // ../../api/
+      type: String,
+      required: true
     },
+    imgName: {
+      type: String,
+      required: true
+    },
+    img: mongoose.ObjectId,
+    dateUploaded: {
+      type: String,
+      required: true
+    }
   },
   {
-    collection: 'posts',
+    collection: 'articles'
   }
 );
 

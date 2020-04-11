@@ -18,6 +18,7 @@
           <tr>
             <th>Title</th>
             <th>Body</th>
+            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -25,7 +26,10 @@
           <tr v-for="post in posts" :key="post._id">
             <td>{{ post.title }}</td>
             <td>{{ post.body }}</td>
-            <td><img :src="post.img" /></td>
+            <td>
+              <img :src="getImg(post.imgName)" />
+            </td>
+
             <td>
               <router-link
                 :to="{ name: 'edit', params: { id: post._id } }"
@@ -48,17 +52,25 @@
   </div>
 </template>
 
+<style scoped>
+img {
+  width: 50px;
+  height: auto;
+}
+</style>
+
 <script>
 export default {
   data() {
     return {
-      posts: [],
+      posts: []
     };
   },
   created() {
     let uri = 'http://localhost:4000/posts';
-    this.axios.get(uri).then((res) => {
+    this.axios.get(uri).then(res => {
       this.posts = res.data;
+      console.log('ovo su postovi', this.posts[0]);
     });
   },
   methods: {
@@ -69,6 +81,9 @@ export default {
       });
       this.$router.go();
     },
-  },
+    getImg(imgName) {
+      return require('../../api/uploads/' + imgName);
+    }
+  }
 };
 </script>
